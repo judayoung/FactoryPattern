@@ -1,44 +1,70 @@
-import abstractFactory.AAABrandAbstractFactory;
+import abstractFactory.CheapBrandAbstractFactory;
 import abstractFactory.AbstractFactory;
-import abstractFactory.BBBBrandAbstractFactory;
+import abstractFactory.LuxuryBrandAbstractFactory;
 import factoryMethod.Factory;
 import factoryMethod.JeanFactory;
 import factoryMethod.ShirtsFactory;
 import factoryMethod.SneakersFactory;
+import product.Jean;
+import product.Shirts;
+import product.Sneakers;
+
+import java.util.ArrayList;
 
 public class FactoryPatternApplication {
 
-    private static Factory shirtFactory = new ShirtsFactory();
-    private static Factory jeanFactory = new JeanFactory();
-    private static Factory sneakersFactory = new SneakersFactory();
+    private static Factory shirtFactory = new ShirtsFactory(new Jean(49900));
+    private static Factory jeanFactory = new JeanFactory(new Shirts(39900));
+    private static Factory sneakersFactory = new SneakersFactory(new Sneakers(55000));
 
-    private static AbstractFactory aaaAbstractFactory = new AAABrandAbstractFactory();
-    private static AbstractFactory bbbAbstractFactory = new BBBBrandAbstractFactory();
+    private static AbstractFactory cheapAbstractFactory = new CheapBrandAbstractFactory(new Shirts(50),new Jean(10), new Sneakers(30));
+    private static AbstractFactory luxuryAbstractFactory = new LuxuryBrandAbstractFactory(new Shirts(100000), new Jean(200000), new Sneakers(600000));
 
     public static void main(String[] args) {
         System.out.println("Hello world!");
-        System.out.println("Get Ready With Me!");
+        System.out.println("Get Ready With Me!\n");
 
-        StringBuilder factoryMethodStyle = new StringBuilder();
-        factoryMethodStyle.append(shirtFactory.createItem())
-                .append(jeanFactory.createItem())
-                .append(sneakersFactory.createItem());
-        System.out.println("factoryMethodStyle : " + factoryMethodStyle);
+        System.out.println("...Factory Methods pattern");
+        ArrayList<Factory> factoryList = getFactoryList();
 
-        StringBuilder aaaAbstractFactoryStyle = new StringBuilder();
-        aaaAbstractFactoryStyle
-                .append(aaaAbstractFactory.createShirts())
-                .append(aaaAbstractFactory.createJean())
-                .append(aaaAbstractFactory.createSneakers());
-        System.out.println("aaaAbstractFactoryStyle : "+aaaAbstractFactoryStyle);
+        String styleOfFactoryMethod = getStyle(factoryList);
+        System.out.println(styleOfFactoryMethod);
+        System.out.println("total price : " + getTotal(factoryList)+"\n");
 
-        StringBuilder bbbAbstractFactoryStyle = new StringBuilder();
-        bbbAbstractFactoryStyle
-                .append(bbbAbstractFactory.createShirts())
-                .append(bbbAbstractFactory.createJean())
-                .append(bbbAbstractFactory.createSneakers());
-        System.out.println("bbbAbstractFactoryStyle : "+bbbAbstractFactoryStyle);
+        System.out.println("...Abstract Factory pattern : AAA");
+        String styleOfAbstractFactory = cheapAbstractFactory.getStyle();
+        System.out.println(styleOfAbstractFactory);
+        System.out.println("total price : " + cheapAbstractFactory.getTotalPrice()+"\n");
 
+        System.out.println("...Abstract Factory pattern : BBB");
+        styleOfAbstractFactory = luxuryAbstractFactory.getStyle();
+        System.out.println(styleOfAbstractFactory);
+        System.out.println("total price : " + luxuryAbstractFactory.getTotalPrice()+"\n");
+
+    }
+
+    public static ArrayList<Factory> getFactoryList(){
+        ArrayList<Factory> factoryList = new ArrayList<>();
+        factoryList.add(shirtFactory);
+        factoryList.add(jeanFactory);
+        factoryList.add(sneakersFactory);
+        return factoryList;
+    }
+
+    public static String getStyle(ArrayList<Factory> factoryList){
+        StringBuilder style = new StringBuilder();
+        for(Factory factory: factoryList){
+            style.append(factory.createProduct() + "\n");
+        }
+        return String.valueOf(style);
+    }
+
+    public static int getTotal(ArrayList<Factory> factoryList){
+        int total = 0;
+        for(Factory factory: factoryList){
+            total += factory.getProductPrice();
+        }
+        return total;
     }
 
 }

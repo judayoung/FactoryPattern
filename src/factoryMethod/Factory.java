@@ -2,6 +2,7 @@ package factoryMethod;
 
 public interface Factory {
 
-    String createItem();
+    String createProduct();
+    int getProductPrice();
 
 }
